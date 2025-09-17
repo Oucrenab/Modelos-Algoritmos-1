@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class PowerUpsSpawner : MonoBehaviour
@@ -37,8 +38,8 @@ public class PowerUpsSpawner : MonoBehaviour
 
         _cd = _spawnCD;
 
-        var powerUp = ChooseRandomPowerUp();
-        TurnOn(powerUp);
+        DoChoose();
+        TurnOn(_lastChoose);
     }
 
     public void TurnOff(BasicGravityObject other)
@@ -47,14 +48,27 @@ public class PowerUpsSpawner : MonoBehaviour
         _allPowerUps.Add(other);
     }
 
-    void TurnOn(BasicGravityObject other)
+    void TurnOn((BasicGravityObject, Vector3) other)
     {
-        if (other.gameObject.activeSelf) return;
+        if (other.Item1.gameObject.activeSelf) return;
 
-        other.transform.position = ChooseRandomPos();
-        other.gameObject.SetActive(true);
-        other.SetSpawner(this);
-        _allPowerUps.Remove(other);
+        other.Item1.transform.position = other.Item2;
+        other.Item1.gameObject.SetActive(true);
+        other.Item1.SetSpawner(this);
+        _allPowerUps.Remove(other.Item1);
+    }
+
+    (BasicGravityObject powerUp, Vector3 position) _lastChoose;
+
+    void DoChoose()
+    {
+        List<Vector3> pos = new();
+        pos.Add(ChooseRandomPos(_lastChoose.position));
+        _lastChoose = _allPowerUps.Where(x => x != _lastChoose.powerUp)
+            .Skip(Random.Range(0, _allPowerUps.Count - 1))
+            .Zip(pos, (power, pos) => (power, pos))
+            .First();
+
     }
 
     BasicGravityObject ChooseRandomPowerUp()
@@ -63,9 +77,11 @@ public class PowerUpsSpawner : MonoBehaviour
         return _allPowerUps[i];
     }
 
-    Vector3 ChooseRandomPos()
+    Vector3 ChooseRandomPos(Vector3 pos)
     {
         var x = Random.Range(BorderManager.Instance.Left + _offset, BorderManager.Instance.Right - _offset);
+        if (x == pos.x)
+            return ChooseRandomPos(pos);
         return new Vector3(x, BorderManager.Instance.Top + _offset, 0);
     }
 

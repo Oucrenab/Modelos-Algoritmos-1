@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 [Serializable]
@@ -51,8 +52,10 @@ public class BossMovement
 
     public void FakeUpdate()
     {
-        if (_currentMovement == BossMovementType.Linear && !InPosition(_positions[_positionIndex]))
-            Movement(_positions[_positionIndex]);
+        //if (_currentMovement == BossMovementType.Linear && !InPosition(_positions[_positionIndex]))
+        //    Movement(_positions[_positionIndex]);
+        if (_currentMovement == BossMovementType.Linear && !InPosition(_currentPosition))
+            Movement(_currentPosition);
 
         if (_currentMovement == BossMovementType.None && Time.time > _myBoss.lastShooting + _myBoss.patternWait)
         {
@@ -136,13 +139,24 @@ public class BossMovement
 
             Movement = delegate { };
 
-            _positionIndex++;
-            if (_positionIndex >= _positions.Length) _positionIndex = 0;
+            //_positionIndex++;
+            //if (_positionIndex >= _positions.Length) _positionIndex = 0;
+
+            _currentPosition = ChooseRandomPos(_positions);
 
             return true;
         }
 
         return false;
+    }
+
+    Vector3 _currentPosition;
+
+    Vector3 ChooseRandomPos(Vector3[] positions)
+    {
+        return positions.Where(x => x!=_currentPosition)
+            .Skip(UnityEngine.Random.Range(0, positions.Length-1))
+            .First();
     }
 
     float CalculateCos(float num)

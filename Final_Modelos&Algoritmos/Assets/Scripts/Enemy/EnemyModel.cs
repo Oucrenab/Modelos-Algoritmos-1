@@ -169,11 +169,22 @@ public class EnemyModel
         _myBase.Pool.Return(_myBase);
     }
 
+    bool _canShoot = false;
+
+    public EnemyModel SetCanShoot(bool canShoot)
+    {
+        Debug.Log(canShoot);
+
+        _canShoot = canShoot;
+        return this;
+    }
+
     protected void Shoot()
     {
         //Debug.Log(transform.position.x + " " + transform.position.y);
-        if (BorderManager.Instance.OutOfBounce(transform.position.x, transform.position.y)) 
-            return;
+        //if (BorderManager.Instance.OutOfBounce(transform.position.x, transform.position.y)) 
+        //    return;
+        if (!_canShoot) return;
         //Debug.Log("PEW");
         _lastShoot = Time.time;
         LinearBullet(transform.up);

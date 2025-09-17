@@ -14,7 +14,6 @@ public class BulletModel
 
     float _speed;
     float _lifeTime;
-    float _timer;
 
     public BulletModel(BaseBullet myBullet ,Transform newTrans, Team newTeam) 
     {
@@ -24,16 +23,15 @@ public class BulletModel
 
         _myMovement = new BulletMovement(transform);
         _lifeTime = 5;
-        _timer = 0;
     }
 
     public void FakeUpdate()
     {
-        if(_timer > _lifeTime)
-        {
-            TurnOffBullet();
-        }
-        _timer += Time.deltaTime;
+        //if(_timer > _lifeTime)
+        //{
+        //    TurnOffBullet();
+        //}
+        //_timer += Time.deltaTime;
 
        _myMovement.FakeUpdate();
     }
@@ -59,11 +57,8 @@ public class BulletModel
 
     void TurnOffBullet()
     {
-
-        _timer = 0;
-
-        if(_pool !=null)
-        _pool.Return(_myBullet);
+        if (_pool != null)
+            _pool.Return(_myBullet);
     }
 
     #region Builder
@@ -86,7 +81,6 @@ public class BulletModel
     public BulletModel SetLifeTime(float life)
     {
         _lifeTime = life;
-        _timer = 0;
 
         return this;
     }

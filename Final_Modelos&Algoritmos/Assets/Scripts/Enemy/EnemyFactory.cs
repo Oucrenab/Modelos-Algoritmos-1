@@ -25,6 +25,8 @@ public class EnemyFactory : Factory<BaseEnemy>
 
     public override void TurnOff(BaseEnemy other)
     {
+        GameLists.Instance.RemoveFromEnemyList(other);
+
         other.gameObject.SetActive(false);
     }
 
@@ -44,6 +46,7 @@ public class EnemyFactory : Factory<BaseEnemy>
             .SetTracking(_trackingType, _trackingTarget)
             .gameObject.SetActive(true);
 
+        GameLists.Instance.AddToEnemyList(other);
     }
 
     private EnemyFactory SetAlgo()

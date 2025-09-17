@@ -17,12 +17,15 @@ public class BaseBullet : MonoBehaviour
 
     float _speed = 1;
 
+    //afther linq
+    public Team Team { get { return _myTeam; } }
+
     private void Awake()
     {
         _myModel = new BulletModel(this,transform,_myTeam).SetMovement(_myMovementType, _speed, transform.up);
         _myView = new BulletView(_spriteRenderer);
 
-        EventManager.Subscribe("OnShieldDestroy", ShieldDestroyed);
+        //EventManager.Subscribe("OnShieldDestroy", ShieldDestroyed);
         EventManager.Subscribe("MementoLoad", TurnOff);
     }
 
@@ -44,9 +47,15 @@ public class BaseBullet : MonoBehaviour
         _myModel.OnShieldDestroy();
     }
 
-    void TurnOff(params object[] noUse)
+    public void TurnOff(params object[] noUse)
     {
         _myModel.OnShieldDestroy();
+    }
+    public BaseBullet TurnOff(bool noUse)
+    {
+        TurnOff();
+
+        return this;
     }
 
     public BaseBullet SetMovement(BulletMovementType type, float speed, Vector3 dir)

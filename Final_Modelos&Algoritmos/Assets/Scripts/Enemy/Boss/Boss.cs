@@ -1,6 +1,8 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class Boss : MonoBehaviour, IDamageable, ILifeObservable, IMemento
@@ -203,13 +205,26 @@ public class Boss : MonoBehaviour, IDamageable, ILifeObservable, IMemento
 
     //    return false;
     //}
-
-    void ChoosePatter()
+    void Shootgun()
     {
-        var num = UnityEngine.Random.Range(0, _patterns.Length);
-        Shoot(num);
-        _patternWait = _patterns[num].duration + 0.1f;
-    }
+        //Debug.Log("SHOOTGUN");
+        _lastShootgunShoot = timer;
+
+        var dir = (_target.position - transform.position).normalized;
+        transform.up = dir;
+        
+        _patternSpawner.transform.position = transform.position;
+        _patternSpawner.ShootLinearBullet(transform.up);
+        _patternSpawner.ShootLinearBullet(transform.right);
+        _patternSpawner.ShootLinearBullet(transform.up + transform.right);
+        _patternSpawner.ShootLinearBullet(transform.up * 2+ transform.right * 0.75f);
+        _patternSpawner.ShootLinearBullet(-transform.right);
+        _patternSpawner.ShootLinearBullet(transform.up - transform.right);
+        _patternSpawner.ShootLinearBullet(transform.up * 2 - transform.right * 0.75f);
+
+        transform.up = Vector3.up;
+    } 
+
 
     #region Movement
     //void LinearMovement(Vector3 pos)
@@ -247,31 +262,34 @@ public class Boss : MonoBehaviour, IDamageable, ILifeObservable, IMemento
     //} 
     #endregion
 
-    void Shootgun()
+    BulletPatternSO _lastPatternShoot;
+
+    void ChoosePatter()
     {
-        //Debug.Log("SHOOTGUN");
-        _lastShootgunShoot = timer;
+        //var num = UnityEngine.Random.Range(0, _patterns.Length);
+        //Shoot(num);
+        //_patternWait = _patterns[num].duration + 0.1f;
 
-        var dir = (_target.position - transform.position).normalized;
-        transform.up = dir;
-        
-        _patternSpawner.transform.position = transform.position;
-        _patternSpawner.ShootLinearBullet(transform.up);
-        _patternSpawner.ShootLinearBullet(transform.right);
-        _patternSpawner.ShootLinearBullet(transform.up + transform.right);
-        _patternSpawner.ShootLinearBullet(transform.up * 2+ transform.right * 0.75f);
-        _patternSpawner.ShootLinearBullet(-transform.right);
-        _patternSpawner.ShootLinearBullet(transform.up - transform.right);
-        _patternSpawner.ShootLinearBullet(transform.up * 2 - transform.right * 0.75f);
+        var pattern = _patterns.Where(x => x != _lastPatternShoot)
+            .Skip(UnityEngine.Random.Range(0, _patterns.Length-1))
+        .First();
 
-        transform.up = Vector3.up;
-    } 
+        _patternWait = pattern.duration + 0.1f;
+        Shoot(pattern);
+    }
 
     void Shoot(int index)
     {
         _lastShooting = Time.time;
         _patternSpawner.transform.position = transform.position;
         _patternSpawner.ShootPattern(_patterns[index]);
+    }
+    void Shoot(BulletPatternSO pattern)
+    {
+        _lastShooting = Time.time;
+        _patternSpawner.transform.position = transform.position;
+        _patternSpawner.ShootPattern(pattern);
+        _lastPatternShoot = pattern;
     }
 
     public Team GetTeam()

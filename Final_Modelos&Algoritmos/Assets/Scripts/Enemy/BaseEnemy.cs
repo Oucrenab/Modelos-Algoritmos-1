@@ -157,6 +157,12 @@ public class BaseEnemy : MonoBehaviour, IDamageable
         return this;
     }
 
+    public BaseEnemy SetCanShoot(bool canShoot)
+    {
+        _myModel.SetCanShoot(canShoot);
+
+        return this;
+    }
     
 
     public BaseEnemy SetLifeTime(bool useLifeTime, float time)

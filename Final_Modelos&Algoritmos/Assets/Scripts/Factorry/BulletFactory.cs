@@ -32,6 +32,8 @@ public class BulletFactory : Factory<BaseBullet>
 
     public override void TurnOff(BaseBullet other)
     {
+        GameLists.Instance.RemoveFromBulletList(other);
+
         other.gameObject.SetActive(false);
     }
 
@@ -44,9 +46,10 @@ public class BulletFactory : Factory<BaseBullet>
     {
         other.SetMovement(type, speed, dir);
         other.SetTeam(team);
-        other.SetLifeTime(life);
+        //other.SetLifeTime(life);
         other.transform.position = _turnOnPos.position;
 
+        GameLists.Instance.AddToBulletList(other);
         other.gameObject.SetActive(true);
     }
 

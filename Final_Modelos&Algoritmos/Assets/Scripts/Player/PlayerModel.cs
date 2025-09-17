@@ -43,6 +43,7 @@ using UnityEngine;
         Debug.Log("Escudo Roto");
         EventManager.Trigger("OnShieldDestroy");
 
+        GameLists.Instance.BlankEffect(_myBase.transform.position, 3);
     }
 
     public void GetDamage(int amount, List<ILifeObserver> observers)

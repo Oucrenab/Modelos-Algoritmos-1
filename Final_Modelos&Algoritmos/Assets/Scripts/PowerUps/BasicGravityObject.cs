@@ -9,6 +9,7 @@ public class BasicGravityObject : MonoBehaviour
     PowerUpsSpawner _mySpawner;
 
 
+
     protected virtual void Update()
     {
         Movement(-Vector3.up);
