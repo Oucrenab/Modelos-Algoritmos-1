@@ -28,6 +28,8 @@ public class EnemyModel
     bool _useLifeTime;
 
     Action<ITargeteable> Tracking = delegate { };
+
+     public float Life { get { return _life; } }
     public EnemyModel(BaseEnemy enemy)
     {
         _myBase = enemy;
@@ -46,13 +48,13 @@ public class EnemyModel
         if (Time.time > _lastShoot + _cd)
             Shoot();
 
-        if (_useLifeTime)
-        {
-            _timer += Time.deltaTime;
-            if (_timer > _lifeTime)
-                _myBase.CallCoroutine(TurnOff());
-                //TurnOff();
-        }
+        //if (_useLifeTime)
+        //{
+        //    _timer += Time.deltaTime;
+        //    if (_timer > _lifeTime)
+        //        _myBase.CallCoroutine(TurnOff());
+        //        //TurnOff();
+        //}
     }
 
     public void FakeFixedUpdate()
@@ -153,14 +155,17 @@ public class EnemyModel
     public void GetDamage(int amount)
     {
         _life -= amount;
-        if (_life < 0)
-        {
-            _myBase.CallCoroutine(TurnOff());
-        }
+        //if (_life < 0)
+        //{
+        //    Death();
+        //}
     }
 
-
-
+    public void Death()
+    {
+        _myBase.CallCoroutine(TurnOff());
+    }
+    //Martin
     IEnumerator TurnOff()
     {
         _myBase.OnDeath();
@@ -173,7 +178,7 @@ public class EnemyModel
 
     public EnemyModel SetCanShoot(bool canShoot)
     {
-        Debug.Log(canShoot);
+        //Debug.Log(canShoot);
 
         _canShoot = canShoot;
         return this;

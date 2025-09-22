@@ -43,6 +43,7 @@ public static class EventManager
      * "MementoLoad";
      * "PlayerDeath"
      * "BossDeath"
+     * "SpawnEnemies"
      */
 
 }

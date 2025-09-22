@@ -2,7 +2,6 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using Unity.VisualScripting;
 using UnityEngine;
 
 public class Boss : MonoBehaviour, IDamageable, ILifeObservable, IMemento
@@ -77,6 +76,8 @@ public class Boss : MonoBehaviour, IDamageable, ILifeObservable, IMemento
 
         Save();
         MementoSubscribe();
+
+        EventManager.Subscribe("SpawnEnemies", SpawnEnemy);
     }
 
 
@@ -119,7 +120,7 @@ public class Boss : MonoBehaviour, IDamageable, ILifeObservable, IMemento
         if (_myMovement != null)
             _myMovement.FakeUpdate();
 
-        SpawnEnemy();
+        //SpawnEnemy();
     }
 
     private void FixedUpdate()
@@ -137,14 +138,15 @@ public class Boss : MonoBehaviour, IDamageable, ILifeObservable, IMemento
         }
     }
     
-    void SpawnEnemy()
+    
+    void SpawnEnemy(params object[] noUse)
     {
         if (!_canSpawnEnemies) return;
         if (_currentEnemyData.Count <= 0) return;
 
-        if (Time.time < _lastTimeEnemySpawn + _enemySpawnWait)
-            return;
-        _lastTimeEnemySpawn = Time.time;
+        //if (Time.time < _lastTimeEnemySpawn + _enemySpawnWait)
+        //    return;
+        //_lastTimeEnemySpawn = Time.time;
 
         for (float i = 0; i < _currentEnemyData.Count; i++)
         {
@@ -155,7 +157,7 @@ public class Boss : MonoBehaviour, IDamageable, ILifeObservable, IMemento
                 .SetMovement(data.movementType, data.speed, data.orbitRadius, i/_currentEnemyData.Count-1, data.chasePlayer)
                 .SetTrackinTarget(_target.GetComponent<ITargeteable>())
                 .SpawnEnemy();
-            _enemySpawnWait = _currentEnemyData[(int)i].lifeTime + 2;
+            //_enemySpawnWait = _currentEnemyData[(int)i].lifeTime + 2;
         }
     }
 
@@ -270,12 +272,19 @@ public class Boss : MonoBehaviour, IDamageable, ILifeObservable, IMemento
         //Shoot(num);
         //_patternWait = _patterns[num].duration + 0.1f;
 
-        var pattern = _patterns.Where(x => x != _lastPatternShoot)
-            .Skip(UnityEngine.Random.Range(0, _patterns.Length-1))
-        .First();
+        System.Random rand = new System.Random();
 
-        _patternWait = pattern.duration + 0.1f;
-        Shoot(pattern);
+        //Gonzalo
+        var pattern = _patterns.Where(x => x != _lastPatternShoot)
+            .OrderBy(x => rand.Next());
+
+        if(pattern.Any())
+        {
+            var finalPattern=pattern.First();
+            _patternWait = finalPattern.duration + 0.1f;
+            Shoot(finalPattern);//Martin
+        }
+
     }
 
     void Shoot(int index)
@@ -288,7 +297,7 @@ public class Boss : MonoBehaviour, IDamageable, ILifeObservable, IMemento
     {
         _lastShooting = Time.time;
         _patternSpawner.transform.position = transform.position;
-        _patternSpawner.ShootPattern(pattern);
+        _patternSpawner.ShootPattern(pattern);//Martin
         _lastPatternShoot = pattern;
     }
 
@@ -455,6 +464,8 @@ public class Boss : MonoBehaviour, IDamageable, ILifeObservable, IMemento
 
     private void OnDestroy()
     {
+        EventManager.Unsubscribe("SpawnEnemies", SpawnEnemy);
+
         MementoUnsubscribe();
     }
 }

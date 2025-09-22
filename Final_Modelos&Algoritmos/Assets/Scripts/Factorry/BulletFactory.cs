@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class BulletFactory : Factory<BaseBullet>
+public class BulletFactory : Factory<BaseBullet>, IFactory
 {
     [SerializeField] ObjectPool<BaseBullet> _pool;
     [SerializeField] int _initialPoolCount;
@@ -17,10 +17,17 @@ public class BulletFactory : Factory<BaseBullet>
     Team _team;
     Transform _turnOnPos;
 
+    public int bulletsShoot;
+
     private void Awake()
     {
         _pool = new ObjectPool<BaseBullet>(Create, TurnOn, TurnOff, _initialPoolCount);
         _turnOnPos = transform;
+    }
+
+    private void Start()
+    {
+        GameLists.Instance.AddToFactoryList(this);
     }
 
     public override BaseBullet Create()
@@ -40,6 +47,7 @@ public class BulletFactory : Factory<BaseBullet>
     public override void TurnOn(BaseBullet other)
     {
         TurnOn(other, _type, _speed, _dir, _team, _lifeTime);
+        bulletsShoot++;
     }
 
     void TurnOn(BaseBullet other, BulletMovementType type, float speed, Vector3 dir, Team team, float life)
@@ -79,5 +87,15 @@ public class BulletFactory : Factory<BaseBullet>
         _turnOnPos = pos;
 
         return this;
+    }
+
+    public int GetCount()
+    {
+        return bulletsShoot;
+    }
+
+    public GameObject GetFactory()
+    {
+        return gameObject;
     }
 }

@@ -67,7 +67,7 @@ public class PatternSpawner : BulletSpawner
             SetPattern(myPattern);
 
             //_currentRoutine = StartPattern(CurrentPattern, _patternDuration, _cd, _rotation);
-            StartCoroutine(StartPattern(CurrentPattern, _patternDuration, _cd, _rotation));
+            StartCoroutine(StartPattern(CurrentPattern, _patternDuration, _cd, _rotation));//Martin
         }
     }
 
@@ -140,6 +140,7 @@ public class PatternSpawner : BulletSpawner
         }
     }
 
+    //Martin
     public IEnumerator StartPattern(Action ShootPattern, float duration, float shootRate, int rotation)
     {
         _alreadyShooting = true;

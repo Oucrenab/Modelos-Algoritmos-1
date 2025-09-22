@@ -57,6 +57,7 @@ public class PowerUpsSpawner : MonoBehaviour
         other.Item1.SetSpawner(this);
         _allPowerUps.Remove(other.Item1);
     }
+    //Martin
 
     (BasicGravityObject powerUp, Vector3 position) _lastChoose;
 
@@ -64,8 +65,10 @@ public class PowerUpsSpawner : MonoBehaviour
     {
         List<Vector3> pos = new();
         pos.Add(ChooseRandomPos(_lastChoose.position));
+
+        System.Random rand = new System.Random();
         _lastChoose = _allPowerUps.Where(x => x != _lastChoose.powerUp)
-            .Skip(Random.Range(0, _allPowerUps.Count - 1))
+            .OrderBy(x => rand.Next())
             .Zip(pos, (power, pos) => (power, pos))
             .First();
 

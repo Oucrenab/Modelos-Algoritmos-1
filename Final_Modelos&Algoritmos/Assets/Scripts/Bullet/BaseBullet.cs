@@ -51,12 +51,6 @@ public class BaseBullet : MonoBehaviour
     {
         _myModel.OnShieldDestroy();
     }
-    public BaseBullet TurnOff(bool noUse)
-    {
-        TurnOff();
-
-        return this;
-    }
 
     public BaseBullet SetMovement(BulletMovementType type, float speed, Vector3 dir)
     {

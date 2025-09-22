@@ -29,7 +29,7 @@ public class BulletView
                 _spriteRenderer.color = Color.red;
                 break;
             case Team.None:
-                _spriteRenderer.color = Color.yellow;
+                _spriteRenderer.color = Color.white;
                 break;
         }
     }

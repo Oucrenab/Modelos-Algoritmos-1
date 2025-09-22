@@ -29,6 +29,8 @@ public class BaseEnemy : MonoBehaviour, IDamageable
     [Header("VIEW")]
     [SerializeField] ParticleSystem _deathParticles;
 
+    public float Life { get { return _myModel.Life; } }
+
     public virtual void GetDamage(int amount)
     {
         //Debug.Log("Duele");
@@ -163,13 +165,17 @@ public class BaseEnemy : MonoBehaviour, IDamageable
 
         return this;
     }
-    
 
     public BaseEnemy SetLifeTime(bool useLifeTime, float time)
     {
         _myModel.SetLifeTime(useLifeTime, time);
 
         return this;
+    }
+
+    public void TriggerDeath()
+    {
+        _myModel.Death();
     }
 
     private void OnDestroy()

@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class EnemyFactory : Factory<BaseEnemy>
+public class EnemyFactory : Factory<BaseEnemy>, IFactory
 {
     [SerializeField] ObjectPool<BaseEnemy> _pool;
     [SerializeField] int _initialPoolCount;
@@ -10,10 +10,17 @@ public class EnemyFactory : Factory<BaseEnemy>
 
     [SerializeField] BaseEnemy _enemyPrefab;
 
+    public int enemiesKill = -6;
+
     private void Awake()
     {
         _pool = new ObjectPool<BaseEnemy>(Create, TurnOn, TurnOff, _initialPoolCount);
         //_turnOnPos = transform;
+    }
+
+    private void Start()
+    {
+        GameLists.Instance.AddToFactoryList(this);
     }
 
     public override BaseEnemy Create()
@@ -28,6 +35,7 @@ public class EnemyFactory : Factory<BaseEnemy>
         GameLists.Instance.RemoveFromEnemyList(other);
 
         other.gameObject.SetActive(false);
+        enemiesKill++;
     }
 
     public override void TurnOn(BaseEnemy other)
@@ -152,5 +160,13 @@ public class EnemyFactory : Factory<BaseEnemy>
         return this;
     }
 
+    public int GetCount()
+    {
+        return enemiesKill;
+    }
 
+    public GameObject GetFactory()
+    {
+        return gameObject;
+    }
 }

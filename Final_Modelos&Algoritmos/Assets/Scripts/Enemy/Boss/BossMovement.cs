@@ -154,9 +154,19 @@ public class BossMovement
 
     Vector3 ChooseRandomPos(Vector3[] positions)
     {
-        return positions.Where(x => x!=_currentPosition)
-            .Skip(UnityEngine.Random.Range(0, positions.Length-1))
-            .First();
+        //return positions.Where(x => x!=_currentPosition)
+        //    .Skip(UnityEngine.Random.Range(0, positions.Length-1))
+        //    .First();
+
+        System.Random rand = new System.Random();
+
+        var pattern = positions.Where(x => x != _currentPosition)
+            .OrderBy(x => rand.Next());
+
+        if (pattern.Any())
+            return pattern.First();
+
+        return default(Vector3);
     }
 
     float CalculateCos(float num)
