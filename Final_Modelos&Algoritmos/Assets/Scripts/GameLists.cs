@@ -15,9 +15,9 @@ using UnityEngine.UI;
 //      GameList EnemyOutOfScreen() Gonzalo linq 3 grupos
 //      GameList BulletOutOfScreen() Martin linq 3 grupos
 //2 tuplas
-//      tupla (BaseEnemy, bool) en GameList EnemyOutOfScreen() Gonzalo
-//      tupla (PowerUp, Position) en PowerUpSpawner DoChoose() Martin linq 3 grupos
-//2 anonimos
+//      (BaseEnemy, bool) en GameList EnemyOutOfScreen() Gonzalo
+//      (PowerUp, Position) en PowerUpSpawner DoChoose() Martin linq 3 grupos
+//2 anonimosS
 //      GameList DespawnBullets Gonzalo
 //      GameList FinalData Martin linq 3 grupos
 //2 agregatte falta 1
@@ -137,7 +137,7 @@ public class GameLists : MonoBehaviour
         }));
 
         List<float> points = new();
-        points.Add( finalPoint.First().point - (Time.timeSinceLevelLoad * 0.01f) * 12);//restar puntos por tiempo
+        points.Add((finalPoint.First().point - (Time.timeSinceLevelLoad * 0.01f)) * 12);//restar puntos por tiempo
 
         //pasar de puntos a rango
         List<Rank> rank = new();
