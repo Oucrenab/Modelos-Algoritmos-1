@@ -7,21 +7,22 @@ using UnityEngine;
 using UnityEngine.UI;
 
 //6 funciones linq revisar
-//2 time-slicing falta 1 (Usar linq adentro)
-//      GameList DespawnBullets Gonzalo
-//      StartPattern Martin (times-licing) y Gonzalo (linq)
+//      Boss ChoosePatter Gonzalo linq 3 grupos
+//2 time-slicing (Usar linq adentro)
+//      GameList DespawnBullets Gonzalo linq 3 grupos
+//      PatternSpawner StartPattern Martin
 //2 generador
-//      GameList EnemyOutOfScreen() Gonzalo
-//      GameList BulletOutOfScreen() Martin
+//      GameList EnemyOutOfScreen() Gonzalo linq 3 grupos
+//      GameList BulletOutOfScreen() Martin linq 3 grupos
 //2 tuplas
 //      tupla (BaseEnemy, bool) en GameList EnemyOutOfScreen() Gonzalo
-//      tupla (PowerUp, Position) en PowerUpSpawner DoChoose() Martin
-//2 anonimos falta 1
+//      tupla (PowerUp, Position) en PowerUpSpawner DoChoose() Martin linq 3 grupos
+//2 anonimos
 //      GameList DespawnBullets Gonzalo
-//      
+//      GameList FinalData Martin linq 3 grupos
 //2 agregatte falta 1
-//      CheckLife Gonzalo
-//      
+//      GameList CheckLife Gonzalo
+//      GameList FinalData martin
 
 public class GameLists : MonoBehaviour
 {
@@ -81,6 +82,7 @@ public class GameLists : MonoBehaviour
 
     void UpdateFinalScreen(params object[] noUSe)
     {
+        if (!_factories.Any()) return;
         var data = FinalData();
 
         kills.text = "Kills: " + data.kills;
@@ -240,12 +242,12 @@ public class GameLists : MonoBehaviour
         //    || y.transform.position.y > BorderManager.Instance.Top)), (e, b) => (e, b))
         //    .ToArray();
 
-        foreach (var enemy in EnemyOutOfScreen(_activeEnemies))
+        foreach (var enemy in EnemyOutOfScreen(_activeEnemies).OfType<(BaseEnemy e, bool b)>())
         {
             enemy.e.SetCanShoot(enemy.b);
         }
 
-        foreach (var bullet in BulletOutOfScreen())
+        foreach (var bullet in BulletOutOfScreen().OfType<BaseBullet>())
         {
             bullet.TurnOff();
         }
